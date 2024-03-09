@@ -14,14 +14,14 @@ function main() {
 
   const server = new Server({
     port: envs.PORT,
-    routes: AppRoutes.routes,
+    // routes: AppRoutes.routes,
   });
 
 
   const httpServer = createServer( server.app );// tenemos un servidor con la misma configuracion que "server"
-
   WssService.initWss({ server: httpServer });
 
+  server.setRoutes( AppRoutes.routes );
 
 
   // server.start();// sevidor de express
