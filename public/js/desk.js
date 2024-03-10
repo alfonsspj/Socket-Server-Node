@@ -1,7 +1,11 @@
-
+// Referencias HTML
 const lblPending = document.querySelector('#lbl-pending');
 const deskHeader = document.querySelector('h1');
 const noMoreAlert = document.querySelector('.alert');
+const lblCurrentTicket = document.querySelector('small');
+
+const btnDraw = document.querySelector('#btn-draw');
+const btnDone = document.querySelector('#btn-done');
 
 const searchParams = new URLSearchParams( window.location.search ); // queryparams
 // console.log(searchParams)
@@ -12,6 +16,8 @@ if( !searchParams.has('escritorio') ) {
 }
 
 const deskNumber = searchParams.get('escritorio');
+let workingTicket = null; // ticket actual que tengo atendiendo
+
 deskHeader.innerText = deskNumber;
 
 function checkTicketCount( currentCount = 0 ) {
@@ -27,12 +33,23 @@ function checkTicketCount( currentCount = 0 ) {
 }
 
 
-
 // numeros de tickets pendientes
 async function loadInitialCount() {
     const pendingTickets = await fetch('/api/ticket/pending').then( resp => resp.json() );
     // lblPending.innerHTML = pending.length || 0;
 	checkTicketCount( pendingTickets.length );
+}
+
+async function getTicket() {
+	const { status, ticket, message } = await fetch(`/api/ticket/draw/${ deskNumber }`).then( resp => resp.json() );
+
+	if( status === 'error' ) {
+		lblCurrentTicket.innerText = message;
+		return;
+	} 
+
+	workingTicket = ticket;
+	lblCurrentTicket.innerText = ticket.number;
 }
 
 
@@ -62,6 +79,9 @@ function connectToWebSockets() {
     };
 }
 
+
+// Listeners
+btnDraw.addEventListener('click', getTicket);
 
 
 // Init
