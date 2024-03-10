@@ -63,13 +63,9 @@ export class TicketService { // los tickets que se estan atendiendo y toda su l√
         ticket.handleAtDesk = desk;
         ticket.handleAt = new Date();
 
-
         this.workingOnTickets.unshift({ ...ticket });
-        // todo: WS
         this.onTicketNumberChanged();
-        // this.onWorkingOnChanged();
-    
-
+        this.onWorkingOnChanged();
 
         return { status: 'ok', ticket }
     }
@@ -96,7 +92,7 @@ export class TicketService { // los tickets que se estan atendiendo y toda su l√
         this.wssService.sendMessage('on-ticket-count-changed', this.pendingTickets.length );
     }
 
-    // private onWorkingOnChanged() {
-    //     this.wssService.sendMessage('on-working-changed', this.lastWorkingOnTickets );
-    // }
+    private onWorkingOnChanged() {
+        this.wssService.sendMessage('on-working-changed', this.lastWorkingOnTickets );
+    }
 }
