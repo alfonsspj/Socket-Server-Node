@@ -6,10 +6,11 @@ import { WssService } from './wss.service';
 export class TicketService { // los tickets que se estan atendiendo y toda su lÃ³gica
 
     constructor(
-        private readonly wssService = WssService.instance,
+        // private readonly wssService = WssService.instance,
+        private wssService = WssService.instance,
     ) {}
 
-    public readonly tickets: Ticket[] = [
+    public tickets: Ticket[] = [
         { id: UuidAdapter.v4(), number: 1, createAt: new Date(), done: false },
         { id: UuidAdapter.v4(), number: 2, createAt: new Date(), done: false },
         { id: UuidAdapter.v4(), number: 3, createAt: new Date(), done: false },
@@ -28,7 +29,7 @@ export class TicketService { // los tickets que se estan atendiendo y toda su lÃ
 
     // pantalla que muestra los 4 utlimos tickets que se estan trabajando
     public get lastWorkingOnTickets(): Ticket[] {
-        return this.workingOnTickets.splice(0, 4);// tomar los ultimos 4
+        return this.workingOnTickets.slice(0, 4);// tomar los ultimos 4
     }
 
     // Ãºltimo num de ticket --         -- tomar el utlimo
@@ -77,7 +78,8 @@ export class TicketService { // los tickets que se estan atendiendo y toda su lÃ
         const ticket = this.tickets.find( t => t.id === id );
         if( !ticket ) return { status: 'error', message: 'Ticket no encontrado' };
 
-        this.tickets.map( ticket => {
+        // this.tickets.map( ticket => {// tecnicamente se lo cambia por referencia
+        this.tickets = this.tickets.map( ticket => {
 
             if( ticket.id === id ) {
                 ticket.done = true;
